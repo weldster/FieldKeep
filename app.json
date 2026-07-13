@@ -4,10 +4,10 @@
     "slug": "fieldkeep",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/app-icon-wdt.png",
+    "icon": "./assets/images/app-icon-seb.png",
     "userInterfaceStyle": "automatic",
     "splash": {
-      "image": "./assets/images/app-icon-wdt.png",
+      "image": "./assets/images/app-icon-seb.png",
       "resizeMode": "contain",
       "backgroundColor": "#FFFFFF"
     },
@@ -20,7 +20,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/app-icon-wdt.png",
+        "foregroundImage": "./assets/images/app-icon-seb.png",
         "backgroundColor": "#FFFFFF"
       },
       "package": "com.placeholder.app"
