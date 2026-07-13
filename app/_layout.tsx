@@ -17,22 +17,22 @@ import {
 import { StatusBar } from "expo-status-bar";
 import { WidgetProvider } from "@/contexts/WidgetContext";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
-// Note: Error logging is auto-initialized via index.ts import
+import { getColors } from "@/constants/Colors";
 
-// Only wrap with ErrorBoundary in dev — production apps should not include it
 const DevErrorBoundary = __DEV__
   ? ErrorBoundary
   : ({ children }: { children: React.ReactNode }) => <>{children}</>;
 
-// Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
 export const unstable_settings = {
-  initialRouteName: "(tabs)", // Ensure any route can link back to `/`
+  initialRouteName: "(tabs)",
 };
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
+  const dark = colorScheme === "dark";
+  const C = getColors(dark);
   const networkState = useNetworkState();
   const [loaded] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
@@ -50,8 +50,8 @@ export default function RootLayout() {
       networkState.isInternetReachable === false
     ) {
       Alert.alert(
-        "🔌 You are offline",
-        "You can keep using the app! Your changes will be saved locally and synced when you are back online."
+        "You are offline",
+        "You can keep using the app. Changes will sync when you reconnect."
       );
     }
   }, [networkState.isConnected, networkState.isInternetReachable]);
@@ -60,44 +60,92 @@ export default function RootLayout() {
     ...DefaultTheme,
     dark: false,
     colors: {
-      primary: "rgb(0, 122, 255)", // System Blue
-      background: "rgb(242, 242, 247)", // Light mode background
-      card: "rgb(255, 255, 255)", // White cards/surfaces
-      text: "rgb(0, 0, 0)", // Black text for light mode
-      border: "rgb(216, 216, 220)", // Light gray for separators/borders
-      notification: "rgb(255, 59, 48)", // System Red
+      primary: "#1B3A5C",
+      background: "#F8F9FB",
+      card: "#FFFFFF",
+      text: "#0F1C2E",
+      border: "rgba(27, 58, 92, 0.10)",
+      notification: "#DC2626",
     },
   };
 
   const CustomDarkTheme: Theme = {
     ...DarkTheme,
     colors: {
-      primary: "rgb(10, 132, 255)", // System Blue (Dark Mode)
-      background: "rgb(1, 1, 1)", // True black background for OLED displays
-      card: "rgb(28, 28, 30)", // Dark card/surface color
-      text: "rgb(255, 255, 255)", // White text for dark mode
-      border: "rgb(44, 44, 46)", // Dark gray for separators/borders
-      notification: "rgb(255, 69, 58)", // System Red (Dark Mode)
+      primary: "#4A8FCC",
+      background: "#0A1520",
+      card: "#111E2E",
+      text: "#E8F0F8",
+      border: "rgba(255, 255, 255, 0.08)",
+      notification: "#EF4444",
     },
   };
+
   return (
     <DevErrorBoundary>
       <StatusBar style="auto" animated />
-        <ThemeProvider
-          value={colorScheme === "dark" ? CustomDarkTheme : CustomDefaultTheme}
-        >
-          <SafeAreaProvider>
-            <WidgetProvider>
-              <GestureHandlerRootView>
+      <ThemeProvider value={dark ? CustomDarkTheme : CustomDefaultTheme}>
+        <SafeAreaProvider>
+          <WidgetProvider>
+            <GestureHandlerRootView style={{ flex: 1 }}>
               <Stack>
-                {/* Main app with tabs */}
                 <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+                <Stack.Screen
+                  name="job/new"
+                  options={{
+                    title: "New Job",
+                    presentation: "modal",
+                    headerStyle: { backgroundColor: C.surface },
+                    headerTintColor: C.primary,
+                    headerTitleStyle: { color: C.text, fontWeight: '600' },
+                  }}
+                />
+                <Stack.Screen
+                  name="job/[id]"
+                  options={{
+                    title: "Job Detail",
+                    headerStyle: { backgroundColor: C.surface },
+                    headerTintColor: C.primary,
+                    headerTitleStyle: { color: C.text, fontWeight: '600' },
+                    headerBackButtonDisplayMode: 'minimal',
+                  }}
+                />
+                <Stack.Screen
+                  name="checklist/[jobId]"
+                  options={{
+                    title: "Safety Checklist",
+                    headerStyle: { backgroundColor: C.surface },
+                    headerTintColor: C.primary,
+                    headerTitleStyle: { color: C.text, fontWeight: '600' },
+                    headerBackButtonDisplayMode: 'minimal',
+                  }}
+                />
+                <Stack.Screen
+                  name="photos/[jobId]"
+                  options={{
+                    title: "Photo Log",
+                    headerStyle: { backgroundColor: C.surface },
+                    headerTintColor: C.primary,
+                    headerTitleStyle: { color: C.text, fontWeight: '600' },
+                    headerBackButtonDisplayMode: 'minimal',
+                  }}
+                />
+                <Stack.Screen
+                  name="signoff/[jobId]"
+                  options={{
+                    title: "Digital Sign-Off",
+                    headerStyle: { backgroundColor: C.surface },
+                    headerTintColor: C.primary,
+                    headerTitleStyle: { color: C.text, fontWeight: '600' },
+                    headerBackButtonDisplayMode: 'minimal',
+                  }}
+                />
               </Stack>
               <SystemBars style={"auto"} />
-              </GestureHandlerRootView>
-            </WidgetProvider>
-          </SafeAreaProvider>
-        </ThemeProvider>
+            </GestureHandlerRootView>
+          </WidgetProvider>
+        </SafeAreaProvider>
+      </ThemeProvider>
     </DevErrorBoundary>
   );
 }
