@@ -13,6 +13,7 @@ import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Plus, Search, Briefcase, AlertCircle, RotateCcw, X } from 'lucide-react-native';
 import { supabase } from '@/app/integrations/supabase/client';
+import { useAuth } from '@/contexts/AuthContext';
 import { AnimatedPressable } from '@/components/AnimatedPressable';
 import { JobCard, Job } from '@/components/JobCard';
 import { SkeletonJobCard } from '@/components/SkeletonLoader';
@@ -32,6 +33,7 @@ export default function JobsScreen() {
   const C = getColors(dark);
   const insets = useSafeAreaInsets();
   const router = useRouter();
+  const { user } = useAuth();
 
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -45,16 +47,7 @@ export default function JobsScreen() {
   const fetchJobs = useCallback(async () => {
     console.log('[Jobs] Fetching jobs list');
     try {
-      const { data: { session } } = await supabase.auth.getSession();
-      let userId = session?.user?.id;
-
-      if (!userId) {
-        console.log('[Jobs] No session, signing in anonymously');
-        const { data, error: anonError } = await supabase.auth.signInAnonymously();
-        if (anonError) throw anonError;
-        userId = data.user?.id;
-      }
-
+      const userId = user?.id;
       if (!userId) throw new Error('Could not get user ID');
 
       console.log('[Jobs] Querying jobs for user:', userId);
@@ -78,7 +71,7 @@ export default function JobsScreen() {
       setLoading(false);
       setRefreshing(false);
     }
-  }, [fadeAnim]);
+  }, [fadeAnim, user]);
 
   useEffect(() => {
     fetchJobs();

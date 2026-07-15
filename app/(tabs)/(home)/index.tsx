@@ -21,6 +21,7 @@ import {
   MapPin,
 } from 'lucide-react-native';
 import { supabase } from '@/app/integrations/supabase/client';
+import { useAuth } from '@/contexts/AuthContext';
 import { AnimatedPressable } from '@/components/AnimatedPressable';
 import { TradeBadge, TradeType } from '@/components/TradeBadge';
 import { StatusBadge } from '@/components/StatusBadge';
@@ -201,6 +202,7 @@ export default function DashboardScreen() {
   const C = getColors(dark);
   const insets = useSafeAreaInsets();
   const router = useRouter();
+  const { user } = useAuth();
 
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -213,16 +215,7 @@ export default function DashboardScreen() {
   const fetchData = useCallback(async () => {
     console.log('[Dashboard] Fetching dashboard data');
     try {
-      const { data: { session } } = await supabase.auth.getSession();
-      let userId = session?.user?.id;
-
-      if (!userId) {
-        console.log('[Dashboard] No session found, signing in anonymously');
-        const { data, error: anonError } = await supabase.auth.signInAnonymously();
-        if (anonError) throw anonError;
-        userId = data.user?.id;
-      }
-
+      const userId = user?.id;
       if (!userId) throw new Error('Could not get user ID');
 
       const today = new Date();
@@ -263,7 +256,7 @@ export default function DashboardScreen() {
       setLoading(false);
       setRefreshing(false);
     }
-  }, [fadeAnim]);
+  }, [fadeAnim, user]);
 
   useEffect(() => {
     fetchData();

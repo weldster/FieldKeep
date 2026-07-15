@@ -15,6 +15,7 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Plus, Users, AlertCircle, RotateCcw, X, ChevronDown } from 'lucide-react-native';
 import { supabase } from '@/app/integrations/supabase/client';
+import { useAuth } from '@/contexts/AuthContext';
 import { AnimatedPressable } from '@/components/AnimatedPressable';
 import { SkeletonCrewCard } from '@/components/SkeletonLoader';
 import { getColors } from '@/constants/Colors';
@@ -121,6 +122,7 @@ export default function CrewScreen() {
   const dark = useColorScheme() === 'dark';
   const C = getColors(dark);
   const insets = useSafeAreaInsets();
+  const { user } = useAuth();
 
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -141,16 +143,7 @@ export default function CrewScreen() {
   const fetchCrew = useCallback(async () => {
     console.log('[Crew] Fetching crew members');
     try {
-      const { data: { session } } = await supabase.auth.getSession();
-      let userId = session?.user?.id;
-
-      if (!userId) {
-        console.log('[Crew] No session, signing in anonymously');
-        const { data, error: anonError } = await supabase.auth.signInAnonymously();
-        if (anonError) throw anonError;
-        userId = data.user?.id;
-      }
-
+      const userId = user?.id;
       if (!userId) throw new Error('Could not get user ID');
 
       console.log('[Crew] Querying crew_members for user:', userId);
@@ -174,7 +167,7 @@ export default function CrewScreen() {
       setLoading(false);
       setRefreshing(false);
     }
-  }, [fadeAnim]);
+  }, [fadeAnim, user]);
 
   useEffect(() => {
     fetchCrew();
@@ -215,8 +208,7 @@ export default function CrewScreen() {
     setFormError(null);
 
     try {
-      const { data: { session } } = await supabase.auth.getSession();
-      const userId = session?.user?.id;
+      const userId = user?.id;
       if (!userId) throw new Error('Not authenticated');
 
       console.log('[Crew] Inserting crew member into Supabase');

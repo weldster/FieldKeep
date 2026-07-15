@@ -11,6 +11,7 @@ import {
 import { useRouter } from 'expo-router';
 import { ChevronDown, Check } from 'lucide-react-native';
 import { supabase } from '@/app/integrations/supabase/client';
+import { useAuth } from '@/contexts/AuthContext';
 import { AnimatedPressable } from '@/components/AnimatedPressable';
 import { getColors } from '@/constants/Colors';
 import type { TradeType } from '@/components/TradeBadge';
@@ -37,6 +38,7 @@ export default function NewJobScreen() {
   const dark = useColorScheme() === 'dark';
   const C = getColors(dark);
   const router = useRouter();
+  const { user } = useAuth();
 
   const [title, setTitle] = useState('');
   const [clientName, setClientName] = useState('');
@@ -61,16 +63,7 @@ export default function NewJobScreen() {
 
     setSaving(true);
     try {
-      const { data: { session } } = await supabase.auth.getSession();
-      let userId = session?.user?.id;
-
-      if (!userId) {
-        console.log('[NewJob] No session, signing in anonymously');
-        const { data, error: anonError } = await supabase.auth.signInAnonymously();
-        if (anonError) throw anonError;
-        userId = data.user?.id;
-      }
-
+      const userId = user?.id;
       if (!userId) throw new Error('Not authenticated');
 
       console.log('[NewJob] Inserting new job into Supabase');

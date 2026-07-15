@@ -1,7 +1,7 @@
 import "react-native-reanimated";
 import React, { useEffect } from "react";
 import { useFonts } from "expo-font";
-import { Stack } from "expo-router";
+import { Stack, useRouter, useSegments } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { SystemBars } from "react-native-edge-to-edge";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
@@ -16,6 +16,7 @@ import {
 } from "@react-navigation/native";
 import { StatusBar } from "expo-status-bar";
 import { WidgetProvider } from "@/contexts/WidgetContext";
+import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { getColors } from "@/constants/Colors";
 
@@ -28,6 +29,28 @@ SplashScreen.preventAutoHideAsync();
 export const unstable_settings = {
   initialRouteName: "(tabs)",
 };
+
+function AuthGuard({ children }: { children: React.ReactNode }) {
+  const { user, loading } = useAuth();
+  const router = useRouter();
+  const segments = useSegments();
+
+  useEffect(() => {
+    if (loading) return;
+
+    const inAuthGroup = segments[0] === 'auth' || segments[0] === 'auth-callback';
+
+    if (!user && !inAuthGroup) {
+      console.log('[AuthGuard] No user, redirecting to /auth');
+      router.replace('/auth' as never);
+    } else if (user && inAuthGroup) {
+      console.log('[AuthGuard] User authenticated, redirecting to /(tabs)');
+      router.replace('/(tabs)' as never);
+    }
+  }, [user, loading, segments, router]);
+
+  return <>{children}</>;
+}
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
@@ -86,64 +109,70 @@ export default function RootLayout() {
       <StatusBar style="auto" animated />
       <ThemeProvider value={dark ? CustomDarkTheme : CustomDefaultTheme}>
         <SafeAreaProvider>
-          <WidgetProvider>
-            <GestureHandlerRootView style={{ flex: 1 }}>
-              <Stack>
-                <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-                <Stack.Screen
-                  name="job/new"
-                  options={{
-                    title: "New Job",
-                    presentation: "modal",
-                    headerStyle: { backgroundColor: C.surface },
-                    headerTintColor: C.primary,
-                    headerTitleStyle: { color: C.text, fontWeight: '600' },
-                  }}
-                />
-                <Stack.Screen
-                  name="job/[id]"
-                  options={{
-                    title: "Job Detail",
-                    headerStyle: { backgroundColor: C.surface },
-                    headerTintColor: C.primary,
-                    headerTitleStyle: { color: C.text, fontWeight: '600' },
-                    headerBackButtonDisplayMode: 'minimal',
-                  }}
-                />
-                <Stack.Screen
-                  name="checklist/[jobId]"
-                  options={{
-                    title: "Safety Checklist",
-                    headerStyle: { backgroundColor: C.surface },
-                    headerTintColor: C.primary,
-                    headerTitleStyle: { color: C.text, fontWeight: '600' },
-                    headerBackButtonDisplayMode: 'minimal',
-                  }}
-                />
-                <Stack.Screen
-                  name="photos/[jobId]"
-                  options={{
-                    title: "Photo Log",
-                    headerStyle: { backgroundColor: C.surface },
-                    headerTintColor: C.primary,
-                    headerTitleStyle: { color: C.text, fontWeight: '600' },
-                    headerBackButtonDisplayMode: 'minimal',
-                  }}
-                />
-                <Stack.Screen
-                  name="signoff/[jobId]"
-                  options={{
-                    title: "Digital Sign-Off",
-                    headerStyle: { backgroundColor: C.surface },
-                    headerTintColor: C.primary,
-                    headerTitleStyle: { color: C.text, fontWeight: '600' },
-                    headerBackButtonDisplayMode: 'minimal',
-                  }}
-                />
-              </Stack>
-              <SystemBars style={"auto"} />
-            </GestureHandlerRootView>
-          </WidgetProvider>
+          <AuthProvider>
+            <WidgetProvider>
+              <GestureHandlerRootView style={{ flex: 1 }}>
+                <AuthGuard>
+                  <Stack>
+                    <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+                    <Stack.Screen name="auth" options={{ headerShown: false }} />
+                    <Stack.Screen name="auth-callback" options={{ headerShown: false }} />
+                    <Stack.Screen
+                      name="job/new"
+                      options={{
+                        title: "New Job",
+                        presentation: "modal",
+                        headerStyle: { backgroundColor: C.surface },
+                        headerTintColor: C.primary,
+                        headerTitleStyle: { color: C.text, fontWeight: '600' },
+                      }}
+                    />
+                    <Stack.Screen
+                      name="job/[id]"
+                      options={{
+                        title: "Job Detail",
+                        headerStyle: { backgroundColor: C.surface },
+                        headerTintColor: C.primary,
+                        headerTitleStyle: { color: C.text, fontWeight: '600' },
+                        headerBackButtonDisplayMode: 'minimal',
+                      }}
+                    />
+                    <Stack.Screen
+                      name="checklist/[jobId]"
+                      options={{
+                        title: "Safety Checklist",
+                        headerStyle: { backgroundColor: C.surface },
+                        headerTintColor: C.primary,
+                        headerTitleStyle: { color: C.text, fontWeight: '600' },
+                        headerBackButtonDisplayMode: 'minimal',
+                      }}
+                    />
+                    <Stack.Screen
+                      name="photos/[jobId]"
+                      options={{
+                        title: "Photo Log",
+                        headerStyle: { backgroundColor: C.surface },
+                        headerTintColor: C.primary,
+                        headerTitleStyle: { color: C.text, fontWeight: '600' },
+                        headerBackButtonDisplayMode: 'minimal',
+                      }}
+                    />
+                    <Stack.Screen
+                      name="signoff/[jobId]"
+                      options={{
+                        title: "Digital Sign-Off",
+                        headerStyle: { backgroundColor: C.surface },
+                        headerTintColor: C.primary,
+                        headerTitleStyle: { color: C.text, fontWeight: '600' },
+                        headerBackButtonDisplayMode: 'minimal',
+                      }}
+                    />
+                  </Stack>
+                </AuthGuard>
+                <SystemBars style={"auto"} />
+              </GestureHandlerRootView>
+            </WidgetProvider>
+          </AuthProvider>
         </SafeAreaProvider>
       </ThemeProvider>
     </DevErrorBoundary>
