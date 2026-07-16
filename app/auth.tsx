@@ -29,7 +29,6 @@ export default function AuthScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
-  const [googleLoading, setGoogleLoading] = useState(false);
   const [appleLoading, setAppleLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -63,43 +62,6 @@ export default function AuthScreen() {
       setError(message);
     } finally {
       setLoading(false);
-    }
-  };
-
-  const handleGoogleSignIn = async () => {
-    console.log('[Auth] Google sign-in button pressed');
-    setGoogleLoading(true);
-    setError(null);
-    try {
-      const { data, error: oauthError } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-          redirectTo: 'fieldkeep://auth-callback',
-          skipBrowserRedirect: true,
-        },
-      });
-      if (oauthError) throw oauthError;
-      if (!data.url) throw new Error('No OAuth URL returned');
-
-      console.log('[Auth] Opening Google OAuth browser session');
-      const result = await WebBrowser.openAuthSessionAsync(data.url, 'fieldkeep://auth-callback');
-      console.log('[Auth] Google OAuth browser result:', result.type);
-
-      if (result.type === 'success' && result.url) {
-        const url = new URL(result.url);
-        const accessToken = url.searchParams.get('access_token') ?? url.hash.match(/access_token=([^&]+)/)?.[1];
-        const refreshToken = url.searchParams.get('refresh_token') ?? url.hash.match(/refresh_token=([^&]+)/)?.[1];
-        if (accessToken && refreshToken) {
-          console.log('[Auth] Setting session from Google OAuth tokens');
-          await supabase.auth.setSession({ access_token: accessToken, refresh_token: refreshToken });
-        }
-      }
-    } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : 'Google sign-in failed';
-      console.error('[Auth] Google sign-in error:', message);
-      setError(message);
-    } finally {
-      setGoogleLoading(false);
     }
   };
 
@@ -409,7 +371,6 @@ export default function AuthScreen() {
                 justifyContent: 'center',
                 flexDirection: 'row',
                 gap: 10,
-                marginBottom: 12,
                 opacity: appleLoading ? 0.75 : 1,
               }}
             >
@@ -426,34 +387,6 @@ export default function AuthScreen() {
                 }}
               >
                 {appleLoading ? 'Signing in...' : 'Continue with Apple'}
-              </Text>
-            </TouchableOpacity>
-
-            {/* Google Sign In */}
-            <TouchableOpacity
-              onPress={handleGoogleSignIn}
-              disabled={googleLoading}
-              activeOpacity={0.85}
-              style={{
-                backgroundColor: C.surface,
-                borderRadius: 14,
-                paddingVertical: 14,
-                alignItems: 'center',
-                justifyContent: 'center',
-                flexDirection: 'row',
-                gap: 10,
-                borderWidth: 1.5,
-                borderColor: C.border,
-                opacity: googleLoading ? 0.75 : 1,
-              }}
-            >
-              {googleLoading ? (
-                <ActivityIndicator size="small" color={C.textSecondary} />
-              ) : (
-                <MaterialCommunityIcons name="google" size={20} color="#4285F4" />
-              )}
-              <Text style={{ fontSize: 15, fontWeight: '600', color: C.text }}>
-                {googleLoading ? 'Signing in...' : 'Continue with Google'}
               </Text>
             </TouchableOpacity>
           </View>
