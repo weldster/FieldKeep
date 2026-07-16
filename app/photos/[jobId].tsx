@@ -12,7 +12,7 @@ import {
 import { useLocalSearchParams, Stack } from 'expo-router';
 import * as ImagePicker from 'expo-image-picker';
 import { Camera, Plus, AlertCircle, RotateCcw, Image as ImageIcon } from 'lucide-react-native';
-import { supabase } from '@/app/integrations/supabase/client';
+import { supabase } from '@/utils/supabase/client';
 import { AnimatedPressable } from '@/components/AnimatedPressable';
 import { SkeletonLine } from '@/components/SkeletonLoader';
 import { getColors } from '@/constants/Colors';

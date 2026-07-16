@@ -14,7 +14,7 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Plus, Users, AlertCircle, RotateCcw, X, ChevronDown } from 'lucide-react-native';
-import { supabase } from '@/app/integrations/supabase/client';
+import { supabase } from '@/utils/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { AnimatedPressable } from '@/components/AnimatedPressable';
 import { SkeletonCrewCard } from '@/components/SkeletonLoader';

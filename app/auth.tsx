@@ -13,7 +13,7 @@ import {
 import { useRouter } from 'expo-router';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import * as WebBrowser from 'expo-web-browser';
-import { supabase } from '@/app/integrations/supabase/client';
+import { supabase } from '@/utils/supabase/client';
 import { getColors } from '@/constants/Colors';
 
 WebBrowser.maybeCompleteAuthSession();

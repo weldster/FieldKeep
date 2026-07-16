@@ -11,7 +11,7 @@ import {
 import { useLocalSearchParams, Stack } from 'expo-router';
 import Svg, { Path } from 'react-native-svg';
 import { PenLine, Trash2, CheckCircle2, AlertCircle, RotateCcw, User } from 'lucide-react-native';
-import { supabase } from '@/app/integrations/supabase/client';
+import { supabase } from '@/utils/supabase/client';
 import { AnimatedPressable } from '@/components/AnimatedPressable';
 import { SkeletonLine } from '@/components/SkeletonLoader';
 import { getColors } from '@/constants/Colors';

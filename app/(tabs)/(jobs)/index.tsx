@@ -12,7 +12,7 @@ import {
 import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Plus, Search, Briefcase, AlertCircle, RotateCcw, X } from 'lucide-react-native';
-import { supabase } from '@/app/integrations/supabase/client';
+import { supabase } from '@/utils/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { AnimatedPressable } from '@/components/AnimatedPressable';
 import { JobCard, Job } from '@/components/JobCard';

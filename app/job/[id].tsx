@@ -21,7 +21,7 @@ import {
   Clock,
   Circle,
 } from 'lucide-react-native';
-import { supabase } from '@/app/integrations/supabase/client';
+import { supabase } from '@/utils/supabase/client';
 import { AnimatedPressable } from '@/components/AnimatedPressable';
 import { StatusBadge } from '@/components/StatusBadge';
 import { TradeBadge, TradeType } from '@/components/TradeBadge';
