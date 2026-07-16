@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { ActivityIndicator, View } from "react-native";
-import { useRouter, useSegments } from "expo-router";
+import { useRouter, useSegments, useRootNavigationState } from "expo-router";
 import { useAuth } from "@/contexts/AuthContext";
 import { useColorScheme } from "react-native";
 import { getColors } from "@/constants/Colors";
@@ -9,11 +9,13 @@ export default function Index() {
   const { user, loading } = useAuth();
   const router = useRouter();
   const segments = useSegments();
+  const rootState = useRootNavigationState();
   const colorScheme = useColorScheme();
   const dark = colorScheme === "dark";
   const C = getColors(dark);
 
   useEffect(() => {
+    if (!rootState?.key) return;
     if (loading) return;
 
     const inAuthGroup =
@@ -26,7 +28,9 @@ export default function Index() {
       console.log("[AuthGuard] User authenticated, redirecting to /(tabs)");
       router.replace("/(tabs)" as never);
     }
-  }, [user, loading, segments, router]);
+  }, [user, loading, segments, router, rootState?.key]);
+
+  if (!rootState?.key) return null;
 
   return (
     <View
