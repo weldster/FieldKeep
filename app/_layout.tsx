@@ -6,8 +6,7 @@ import * as SplashScreen from "expo-splash-screen";
 import { SystemBars } from "react-native-edge-to-edge";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import { useColorScheme, Alert } from "react-native";
-import { useNetworkState } from "expo-network";
+import { useColorScheme } from "react-native";
 import {
   DarkTheme,
   DefaultTheme,
@@ -34,7 +33,6 @@ export default function RootLayout() {
   const colorScheme = useColorScheme();
   const dark = colorScheme === "dark";
   const C = getColors(dark);
-  const networkState = useNetworkState();
   const [loaded] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
   });
@@ -44,18 +42,6 @@ export default function RootLayout() {
       SplashScreen.hideAsync();
     }
   }, [loaded]);
-
-  React.useEffect(() => {
-    if (
-      !networkState.isConnected &&
-      networkState.isInternetReachable === false
-    ) {
-      Alert.alert(
-        "You are offline",
-        "You can keep using the app. Changes will sync when you reconnect."
-      );
-    }
-  }, [networkState.isConnected, networkState.isInternetReachable]);
 
   const CustomDefaultTheme: Theme = {
     ...DefaultTheme,
