@@ -47,7 +47,8 @@
     "extra": {
       "router": {
         "ignore": [
-          "integrations/**"
+          "integrations/**",
+          "**/*.ios.tsx"
         ]
       }
     }
