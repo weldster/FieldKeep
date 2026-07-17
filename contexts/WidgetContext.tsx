@@ -1,13 +1,6 @@
 import * as React from "react";
 import { createContext, useCallback, useContext } from "react";
 import { Platform } from "react-native";
-import { ExtensionStorage } from "@bacons/apple-targets";
-
-// Only instantiate on iOS — ExtensionStorage is a native-only API
-const storage =
-  Platform.OS === "ios"
-    ? new ExtensionStorage("group.com.<user_name>.<app_name>")
-    : null;
 
 type WidgetContextType = {
   refreshWidget: () => void;
@@ -20,8 +13,8 @@ export function WidgetProvider({ children }: { children: React.ReactNode }) {
     if (Platform.OS !== "ios") return;
     console.log("[WidgetContext] reloadWidget on mount");
     // set widget_state to null if we want to reset the widget
-    // storage?.set("widget_state", null);
-    ExtensionStorage.reloadWidget();
+    // require('@bacons/apple-targets').ExtensionStorage?.set("widget_state", null);
+    require("@bacons/apple-targets").ExtensionStorage.reloadWidget();
   }, []);
 
   const refreshWidget = useCallback(() => {
@@ -30,7 +23,7 @@ export function WidgetProvider({ children }: { children: React.ReactNode }) {
       return;
     }
     console.log("[WidgetContext] refreshWidget called");
-    ExtensionStorage.reloadWidget();
+    require("@bacons/apple-targets").ExtensionStorage.reloadWidget();
   }, []);
 
   return (
