@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import {
   Briefcase,
   ClipboardCheck,
@@ -310,15 +311,34 @@ export default function DashboardScreen() {
             backgroundColor: C.primary,
           }}
         >
-          <Text style={{ fontSize: 11, color: 'rgba(255,255,255,0.6)', fontWeight: '600', letterSpacing: 1, textTransform: 'uppercase', marginBottom: 4 }}>
-            {dateStr}
-          </Text>
-          <Text style={{ fontSize: 28, fontWeight: '800', color: '#FFFFFF', letterSpacing: -0.5 }}>
-            FieldKeep
-          </Text>
-          <Text style={{ fontSize: 14, color: 'rgba(255,255,255,0.7)', marginTop: 2 }}>
-            Job Site Compliance
-          </Text>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+            <View>
+              <Text style={{ fontSize: 11, color: 'rgba(255,255,255,0.6)', fontWeight: '600', letterSpacing: 1, textTransform: 'uppercase', marginBottom: 4 }}>
+                {dateStr}
+              </Text>
+              <Text style={{ fontSize: 28, fontWeight: '800', color: '#FFFFFF', letterSpacing: -0.5 }}>
+                FieldKeep
+              </Text>
+              <Text style={{ fontSize: 14, color: 'rgba(255,255,255,0.7)', marginTop: 2 }}>
+                Job Site Compliance
+              </Text>
+            </View>
+            <TouchableOpacity
+              onPress={() => router.push('/account')}
+              hitSlop={12}
+              style={{
+                width: 38,
+                height: 38,
+                borderRadius: 19,
+                backgroundColor: 'rgba(255,255,255,0.15)',
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginTop: 4,
+              }}
+            >
+              <MaterialCommunityIcons name="account" size={22} color="#FFFFFF" />
+            </TouchableOpacity>
+          </View>
         </View>
 
         <View style={{ paddingHorizontal: 20, paddingTop: 20 }}>

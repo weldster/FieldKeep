@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "FieldKeep",
-    "slug": "fieldkeep",
+    "slug": "field-keep-compliatnce-khfqbe",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/app-icon-aso.png",
@@ -13,7 +13,7 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.placeholder.app",
+      "bundleIdentifier": "com.fieldkeep.app",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false,
         "NSPhotoLibraryUsageDescription": "FieldKeep uses your photo library to attach before and after photos to job records."
@@ -24,7 +24,7 @@
         "foregroundImage": "./assets/images/app-icon-aso.png",
         "backgroundColor": "#FFFFFF"
       },
-      "package": "com.placeholder.app",
+      "package": "com.fieldkeep.app",
       "permissions": [
         "READ_MEDIA_IMAGES"
       ]

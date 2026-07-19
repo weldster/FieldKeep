@@ -78,6 +78,7 @@ export default function RootLayout() {
               <GestureHandlerRootView style={{ flex: 1 }}>
                 <Stack>
                   <Stack.Screen name="index" options={{ headerShown: false, animation: 'none' }} />
+                  <Stack.Screen name="account" options={{ headerShown: false, presentation: 'modal' }} />
                   <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
                   <Stack.Screen name="auth" options={{ headerShown: false }} />
                   <Stack.Screen name="auth-callback" options={{ headerShown: false }} />
